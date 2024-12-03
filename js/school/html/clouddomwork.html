@@ -1,0 +1,105 @@
+<!-- 최적화 한 후 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" >
+<title>끝말잇기</title>
+</head>
+
+<body>
+    <div><span id="order">1</span>번째 참가자</div>
+    <div>제시어 : <span id="word"></span></div>
+    <input type="text">
+    <button>입력</button>
+
+<script>
+
+    const number = Number(prompt("참가자는 몇 명인가요?"));  // prompt를 이용하여 참가자를 숫자로 변환하여 저장
+    
+    // 프론트 엔드에 만든 버튼 및 여러개의 요소들을 변수로 선언
+    const $button = document.querySelector('button');
+    const $input = document.querySelector('input');
+    const $word = document.querySelector('#word');
+    const $order = document.querySelector('#order');
+    
+    let word;           // 현재 제시된 단어를 저장할 변수
+    let newWord;        // 사용자가 새로 입력한 단어를 저장할 변수
+    
+    const onClickButton = () => {
+        if(!word || word[word.length - 1] === newWord[0]) { // word가 없거나(or) 이전 단어의 마지막 글자와 새로 입력한 첫 글자 비교 시 같을 때
+            word = newWord;                                 // 입력한 새로운 단어를 현재 단어로 저장
+            $word.textContent = word;                       // 입력한 단어를 word에 표시
+            const order = Number($order.textContent);       // 참가자 순서를 갱신
+            if(order + 1 > number) {                        // 참가자 수를 초과하지 않으면
+                $order.textContent = 1;                     // 이번 순서 참가자 차례로 넘어감
+            } else { 
+                $order.textContent = order + 1;             // 초과하면 다음 참가자 순서로 넘어감
+            }
+            $input.value = '';                              // 입력할 input 부분을 비움
+            $input.focus();
+        } else {
+            alert('틀린 단어입니다!')                           // 전 이번 단어의 마지막 글자와 새로 입력한 첫 글자 비교 시 다를 때 '틀린 단어입니다!' 를 출력
+            $input.value = '';                              // 입력할 input 부분을 비움
+            $input.focus();
+        }
+        
+    };
+
+    const onInput = (event) => {
+        newWord = event.target.value;   // 사용자가 단어를 입력하면 newWord에 저장을 함
+    };
+    $input.addEventListener('input', onInput);      // input에 input하여 onInput함수를 실행 후 저장
+    $button.addEventListener('click', onClickButton);   // button을 click하여 onClickButton 함수 실행
+
+</script>
+</body>
+</html>
+
+<!-- 최적화 후
+if(!word || word[word.length - 1] === newWord[0]) { // word가 없거나(or) 이전 단어의 마지막 글자와 새로 입력한 첫 글자 비교 시 같을 때
+    word = newWord;                                 // 입력한 새로운 단어를 현재 단어로 저장
+    $word.textContent = word;                       // 입력한 단어를 word에 표시
+    const order = Number($order.textContent);       // 참가자 순서를 갱신
+    if(order + 1 > number) {                        // 참가자 수를 초과하지 않으면
+        $order.textContent = 1;                     // 이번 순서 참가자 차례로 넘어감
+    } else { 
+        $order.textContent = order + 1;             // 초과하면 다음 참가자 순서로 넘어감
+    }
+    $input.value = '';                              // 입력할 input 부분을 비움
+    $input.focus();
+} else {
+    alert('틀린 단어입니다!')                           // 전 이번 단어의 마지막 글자와 새로 입력한 첫 글자 비교 시 다를 때 '틀린 단어입니다!' 를 출력
+    $input.value = '';                              // 입력할 input 부분을 비움
+    $input.focus();
+} -->
+
+<!-- 최적화 전 -->
+<!-- if(!word) {                                         // 게임을 시작하였을 때 -> 아직 시작 단어가 없음
+    word = newWord;                                 // 입력한 새로운 단어를 현재 단어로 저장
+    $word.textContent = word;                       // 입력한 단어를 word에 표시
+    const order = Number($order.textContent);       // 참가자 순서를 갱신
+    if(order + 1 > number) {                        // 참가자 수를 초과하지 않으면
+        $order.textContent = 1;                     // 이번 순서 참가자 차례
+    } else {
+        $order.textContent = order + 1;             // 초과하면 다음 참가자 순서로 넘어감
+    }
+    $input.value = '';                              // 입력할 input 부분을 비움
+    $input.focus();
+} else {                                            // 게임 시작이 아닐 시 -> 전에 저장되어 있는 단어가 있음
+    if(word[word.length - 1] === newWord[0]) {      // 이전 단어의 마지막 글자(마지막 인댁스)와 새로 입력된 첫 글자(첫 인덱스) 비교 시 같을 때
+        word = newWord;                             // 입력한 단어를 현재 단어로 저장
+        $word.textContent = word;                   // 입력한 단어를 word에 표시
+        const order = Number($order.textContent);   // 참가자 순서를 갱신
+        if(order + 1 > number) {                    // 참가자 수를 초과하지 않으면
+            $order.textContent = 1;                 // 이번 순서 참가자 차례
+        } else {                
+            $order.textContent = order + 1;         // 초과하면 다음 참가자 순서로 넘어감
+        }
+        $input.value = '';                          // 입력한 input 부분을 비움
+        $input.focus();
+    } else {
+        alert('틀린 단어입니다!');                      // 만약 이전 단어의 마지막 글자와 새로 입력된 첫 글자 비교 시 다를 때 '틀린 단어입니다!'를 출력
+        $input.value = '';                          // 입력할 input 부분을 비움
+        $input.focus();
+    }
+} -->

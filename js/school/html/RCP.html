@@ -1,0 +1,88 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<title>가위바위보</title>
+<style> 
+#computer {
+  width: 165px; 
+  height: 200px;
+}
+</style>
+</head>
+<body>
+<div id="computer"></div>
+<div>
+  <button id="scissors" class="btn">가위</button>
+  <button id="rock" class="btn">바위</button>
+  <button id="paper" class="btn">보</button>
+</div>
+<div id="score">0</div>
+<script>
+const $computer = document.querySelector('#computer');  // 각 html 요소를 script에 연결
+const $score = document.querySelector('#score');
+const $rock = document.querySelector('#rock');
+const $scissors = document.querySelector('#scissors'); 
+const $paper = document.querySelector('#paper');
+const IMG_URL = './rsp.png';                            // 이미지 파일 경로 저장
+$computer.style.background = `url(${IMG_URL}) 0 0`;
+$computer.style.backgroundSize = 'auto 200px';          // 이미지를 화면 0,0으로 위치 조정 세로는 200px
+const rspX = {                  // 하나의 이미지를 사용하여 픽셀을 조정하여 가위바위보를 표현
+  scissors: '0',                // 0px 위치 -> 가위
+  rock: '-220px',               // -220px -> 바위
+  paper: '-440px',              // -440px -> 보
+};
+let computerChoice = 'scissors'; 
+const changeComputerHand = () => {              // 이미지를 순서대로 가위 -> 보 -> 바위 순서로 변경
+  if (computerChoice === 'rock') {              // 바위일때 가위로 변경
+    computerChoice = 'scissors';
+  } else if (computerChoice === 'scissors') {   // 가위일때 보로 변경
+    computerChoice = 'paper';
+  } else if (computerChoice === 'paper') {      // 보일때 바위로 변경
+    computerChoice = 'rock';
+  }
+  $computer.style.background = `url(${IMG_URL}) ${rspX[computerChoice]} 0`;
+  $computer.style.backgroundSize = 'auto 200px';
+}
+
+let intervalId = setInterval(changeComputerHand, 50);   // 50ms마다 가위바위보 이미지 변경
+
+const scoreTable = { 
+  rock: 1,                  // 바위 -> 1정
+  scissors: 0,              // 가위 -> 0정
+  paper: 2,                 // 보  -> 2정
+};
+
+let clickable = true;
+let score = 0;                      // 0점으로 시작
+const clickButton = (event) => { 
+  if (clickable) {                  // clickable 이 true인 경우에만 작동
+    clearInterval(intervalId);      // 클릭 수에는 손 모양 멈추기
+    clickable = false;              // 연속 클릭은 안됨
+    const myChoice = event.target.textContent === '바위' ? 'rock'   // 바위를 누르면 rock이고
+      : event.target.textContent === '가위' ? 'scissors' : 'paper'; // 가위를 누르면 scissors 둘 다 아니면 paper
+    const myScore = scoreTable[myChoice];                   // 사용자 점수 계산
+    const computerScore = scoreTable[computerChoice];       // 컴퓨터 점수 계산
+    const diff = myScore - computerScore;                   // 둘의 차이를 통해 계산
+    let message;
+    if ([1, -2].includes(diff)) {                           // 둘의 차이가 1이거나 -2일시 승리 -> 승리 출력 후 총점 1점 추가
+      score += 1;
+      message = '승리';
+    } else if ([-1, 2].includes(diff)) {                    // 둘의 차이가 -1이거나 2일시 패배 -> 패배 출력 후 총점 1청 차감
+      score -= 1;
+      message = '패배';
+    } else {                                                // 둘 다 아닐시 무승부 -> 무승부 출력
+      message = '무승부';
+    }
+    $score.textContent = `${message} 총: ${score}점`;        // 총점 출력
+    setTimeout(() => {                                      // 결과 1초동안 출력 후 다시 게임 시작
+      clickable = true;
+      intervalId = setInterval(changeComputerHand, 50);
+    }, 1000);
+  }
+};
+$rock.addEventListener('click', clickButton);               // 각각 가위,바위,보 버튼 함수 연결
+$scissors.addEventListener('click', clickButton);
+$paper.addEventListener('click', clickButton);
+</script>
+</body>
+</html>

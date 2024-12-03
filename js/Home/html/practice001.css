@@ -1,0 +1,33 @@
+.color-primary {
+    color:blueviolet;
+}
+
+.font-50 {
+    font-size: 50px;
+}
+
+.select-style1 {
+    height: 40px;
+    font-size: 20px;
+    color: blue;
+}
+
+.tb-head>tr>td {
+    border: 1px solid #2b595e;
+    font-size: 14px;
+    font-weight: bold;
+    color: burlywood;
+}
+
+.tb-body>tr>td {
+    border: 1px solid rebeccapurple;
+}
+
+
+
+/*  *blahblah {} -> 전체 선택자
+    p {} -> 태그 선택자 (html에 p에 포함된 애들에게 포함 
+    .blahblah {} -> 클래스 선택자  
+    #blah {} -> 아이디 선택자  
+    div ul {} -> 하위 선택자
+    div>ul {} -> 자식 선택자  */
